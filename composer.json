@@ -2,5 +2,10 @@
     "name": "Shoplo/shoplo-php",
     "require": {
         "guzzle/guzzle": "v2.7.2"
+    },
+    "autoload": {
+        "psr-0": {
+            "Shoplo": "src/"
+        }
     }
 }
