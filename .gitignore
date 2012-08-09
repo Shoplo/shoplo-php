@@ -1,4 +1,5 @@
 .DS_Store
+bootstrap.php
 composer.phar
 composer.lock
 vendor

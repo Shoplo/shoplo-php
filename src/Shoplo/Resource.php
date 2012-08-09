@@ -4,12 +4,12 @@ namespace Shoplo;
 
 class Resource
 {
-	public $prefix = "/";
+    protected $client;
 	protected $bucket = array();
 
-	public function __construct($site)
+	public function __construct($client)
 	{
-		$this->prefix = $site . $this->prefix;
+        $this->client = $client;
 	}
 
 	protected function prepare_params($params)
@@ -22,19 +22,12 @@ class Resource
 		return $string;
 	}
 
-	protected function prepare_result($result)
+    protected function prepare_result($result)
 	{
 		if (!is_array($result)) return array();
 
 		if (isset($result['status'])) return $result;
 
-		/* no organizing needed */
-		/*if (!isset($array[$type][0])){
-			$temp = $array[$type];
-			$id = $temp['id'];
-			$array[$type] = array();
-			$array[$type][$id] = $temp;
-		}else{*/
 		$data = array();
 		foreach ($result as $k => $v) {
 			if (!is_array($v)) {
@@ -45,30 +38,35 @@ class Resource
 			$data[$id] = $v;
 			unset($result[$k]);
 		}
-		/*}*/
-
 		return $data;
 	}
 
-	protected function send($url, $request = 'GET', $fields = array())
+	protected function send($uri, $request = 'GET', $fields = array())
 	{
-		$ch   = new objectCURL();
-		$data = $ch->send($url, $request, $fields);
-		$info = $ch->loadString($data);
-		if (isset($info['status']) && $info['status'] == 'err') {
-			if ($info['error'] == 202) {
-				throw new AuthException($info['error_msg'], $info['error']);
-			} else {
-				throw new \Exception($info['error_msg'], $info['error']);
-			}
-		}
+        if ( 0 === strpos($uri, '/') ) $uri = substr($uri, 1);
+        $uri = '/services/'.$uri;
 
-		return $info;
+        $method = strtolower($request);
+        $headers = null;
+        $body = ( $method == 'post' ) ? $fields : null;
+
+        $response = $this->client->$method($uri, $headers, $body)->send();
+        $result = json_decode($response->getBody(true), true);
+
+        if ( isset($result['status']) && $result['status'] == 'err' )
+        {
+            if ( $result['error'] == '202' ) #Authorize error - need generate new access token
+            {
+                throw new AuthException($result['error_msg']);
+            }
+            throw new ShoploException($result['error_msg']);
+        }
+        return $result;
 	}
 
 	public function __destruct()
 	{
-		unset($this->prefix);
+		unset($this->client);
 		unset($this->bucket);
 	}
 }

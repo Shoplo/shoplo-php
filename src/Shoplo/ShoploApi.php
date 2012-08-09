@@ -1,17 +1,41 @@
 <?php
 
 namespace Shoplo;
+//namespace Guzzle;
+
+define('SHOPLO_API_URL','http://api.shoplo.com');
+define('SHOPLO_REQUEST_TOKEN_URI', '/services/oauth/request_token');
+define('SHOPLO_ACCESS_TOKEN_URI', '/services/oauth/access_token');
+define('SHOPLO_AUTHORIZE_URL', SHOPLO_API_URL . '/services/oauth/authorize');
 
 class ShoploApi
 {
-	private $api_key;
-	private $secret_key;
-	private $url;
-	private $redirect_url;
-	private $consumer_key;
-	private $consumer_secret;
+    /**
+     * @var String
+     */
+    private $api_key;
 
-	/**
+    /**
+     * @var String
+     */
+	private $secret_key;
+
+    /**
+     * @var String
+     */
+    private $oauth_token;
+
+    /**
+     * @var String
+     */
+    private $oauth_token_secret;
+
+    /**
+     * @var Boolean
+     */
+    public $authorized = false;
+
+    /**
 	 * @var Category
 	 */
 	public $category;
@@ -56,145 +80,148 @@ class ShoploApi
 	 */
 	public $shop;
 
-	public function __construct($url, $api_key, $secret_key, $params = array())
+	public function __construct($config)
 	{
-		$this->url        = $url;
-		$this->api_key    = $api_key;
-		$this->secret_key = $secret_key;
-		$this->protocol   = 'http';
-		$this->url        = $this->prepare_url($this->url);
+        if ( !session_id() )
+        {
+            throw new ShoploException('Session not initialized');
+        }
+        if ( !isset($config['api_key']) || empty($config['api_key']) )
+        {
+            throw new ShoploException('Invalid Api Key');
+        }
+        elseif ( !isset($config['secret_key']) || empty($config['secret_key']) )
+        {
+            throw new ShoploException('Invalid Api Key');
+        }
+        elseif ( !isset($config['callback_url']) || empty($config['callback_url']) )
+        {
+            throw new ShoploException('Invalid Callback Url');
+        }
 
-		if (isset($_SESSION['auth_key'])) {
-			$this->setSecretKey($_SESSION['auth_key']);
-			$this->instanceModels();
-		}
+
+		$this->api_key    = $config['api_key'];
+		$this->secret_key = $config['secret_key'];
+		$this->callback_url = (false === strpos($config['callback_url'], 'http')) ? 'http://'.$config['callback_url'] : $config['callback_url'];
+
+
+        $this->authorize();
+
+
+        $client = $this->getClient();
+        $this->category        = new Category($client);
+        $this->collection      = new Collection($client);
+        $this->customer        = new Customer($client);
+        $this->order           = new Order($client);
+        $this->order_status    = new OrderStatus($client);
+        $this->product         = new Product($client);
+        $this->product_image   = new ProductImage($client);
+        $this->product_variant = new ProductVariant($client);
+        $this->shop            = new Shop($client);
 	}
 
-	public function getRedirectUrl()
-	{
-		return $this->redirect_url;
-	}
 
-	public function setRedirectUrl($url)
-	{
-		$this->redirect_url = $url;
-	}
-
-	public function setConsumerKey($consumer_key)
-	{
-		$this->consumer_key = $consumer_key;
-	}
-
-	public function setConsumerSecret($consumer_secret)
-	{
-		$this->consumer_secret = $consumer_secret;
-	}
+    public function authorize()
+    {
+        if ( isset($_SESSION['oauth_token']) )
+        {
+            $this->oauth_token = $_SESSION['oauth_token'];
+            $this->oauth_token_secret = $_SESSION['oauth_token_secret'];
+            //unset($_SESSION['oauth_token'], $_SESSION['oauth_token_secret']);
+            $this->authorized = true;
+            return true;
+        }
 
 
-	// przeniosłem ładowanie modeli później, bo przy tworzeniu tej klasy tak naprawdę nie znamy jeszcze klucza api, którym się będziemy łączyc.
+        if ( empty($_GET["oauth_token"]) )
+        {
+            $this->requestToken();
+        }
+        else
+        {
+            $this->accessToken();
+        }
+
+        $this->authorized = true;
+
+        return true;
+    }
+
+    private function requestToken()
+    {
+        $client = $this->getClient();
+        $response = $client->post(SHOPLO_REQUEST_TOKEN_URI)->send();
+
+        $data = explode('&', $response->getBody(true));
+        $token = array();
+        foreach ( $data as $d )
+        {
+            list($k, $v) = explode('=', $d);
+            $token[$k] = $v;
+        }
+        $_SESSION['oauth_token_secret'] = $token['oauth_token_secret'];
 
 
-	public function instanceModels()
-	{
-		if ($this->valid()) {
-			$this->category        = new Category($this->siteUrl());
-			$this->collection      = new Collection($this->siteUrl());
-			$this->customer        = new Customer($this->siteUrl());
-			$this->order           = new Order($this->siteUrl());
-			$this->order_status    = new OrderStatus($this->siteUrl());
-			$this->product         = new Product($this->siteUrl());
-			$this->product_image   = new ProductImage($this->siteUrl());
-			$this->product_variant = new ProductVariant($this->siteUrl());
-			$this->shop            = new Shop($this->siteUrl());
-		}
-	}
+        $callback_uri = $this->callback_url . '?consumer_key='.rawurlencode(CONSUMER_KEY);
+        $uri = SHOPLO_AUTHORIZE_URL . '?oauth_token='.rawurlencode($token['oauth_token']).'&oauth_callback='.rawurlencode($callback_uri);
 
-	// analogicznie, jak wyżej.
-	public function setApiKey($apiKey)
-	{
-		$this->api_key = $apiKey;
-	}
 
-	public function setSecretKey($secretKey)
-	{
-		$this->secret_key = $secretKey;
-	}
+        header('Location: '.$uri);
+        exit();
+    }
 
-	public function getRequestToken()
-	{
+    private function accessToken()
+    {
+        //  STEP 2:  Get an access token
+        $client = $this->getClient($_GET['oauth_token'], $_SESSION['oauth_token_secret']);
+        $response = $client->post(SHOPLO_ACCESS_TOKEN_URI)->send();
+        unset($_SESSION['oauth_token_secret']);
 
-		$objectCurl      = new objectCURL();
-		$requestTokenUrl = $this->url . '/panel/api/oauth/' . $this->api_key . '/request/token';
-		$options         = array(
-			'oauth_consumer_key'    => $this->consumer_key,
-			'oauth_consumer_secret' => $this->consumer_secret,
-			'oauth_url'             => $this->url,
-			'oauth_callback'        => $this->redirect_url,
-		);
-		$objectCurl->addParams($options);
-		$data = $objectCurl->send($requestTokenUrl, 'POST');
-		$data = json_decode($data);
-		header("Location: " . $data->callback . '?requestToken=' . $data->token);
-	}
 
-	public function getAccessToken($token)
-	{
+        $data = explode('&', $response->getBody(true));
+        $token = array();
+        foreach ( $data as $d )
+        {
+            list($k, $v) = explode('=', $d);
+            $token[$k] = $v;
+        }
 
-		$options = array(
-			'oauth_consumer_key'    => $this->consumer_key,
-			'oauth_consumer_secret' => $this->consumer_secret,
-			'oauth_url'             => $this->url,
-			'oauth_callback'        => $this->redirect_url,
-			'oauth_token'           => $token,
-		);
+        $this->oauth_token = $_SESSION['oauth_token'] = $token['oauth_token'];
+        $this->oauth_token_secret = $_SESSION['oauth_token_secret'] = $token['oauth_token_secret'];
+    }
 
-		$objectCurl             = new objectCURL();
-		$requestTokenUrl        = $this->url . '/panel/api/oauth/' . $this->api_key . '/access/token/' . $token;
-		$options['oauth_token'] = $token;
-		$objectCurl->addParams($options);
+    public function getClient($token=null, $tokenSecret=null)
+    {
+        $token = !is_null($token) ? $token : ($this->oauth_token ? $this->oauth_token : '');
+        $tokenSecret = !is_null($tokenSecret) ? $tokenSecret: ($this->oauth_token_secret ? $this->oauth_token_secret : '');
+        $oauth = new \Guzzle\Http\Plugin\OauthPlugin(array(
+            'consumer_key'    => $this->api_key,
+            'consumer_secret' => $this->secret_key,
+            'token'           => $token,
+            'token_secret'    => $tokenSecret
+        ));
+        $client = new \Guzzle\Http\Client(SHOPLO_API_URL);
+        $client->addSubscriber($oauth);
+        return $client;
+    }
 
-		$data = $objectCurl->send($requestTokenUrl, 'POST');
-		$data = json_decode($data);
-		header("Location: " . $data->callback . '?accessToken=' . $data->token);
 
-	}
+	public function getOAuthToken()
+    {
+        return $this->oauth_token;
+    }
 
-	public function autorize($data = array())
-	{
-		if (empty($data['requestToken']) && empty($data['accessToken'])) {
-			$this->getRequestToken();
-		}
-
-		if (isset($data['requestToken']) && !empty($data['requestToken'])) {
-			$requestToken = $_GET['requestToken'];
-			$this->getAccessToken($requestToken);
-		}
-
-		if (isset($data['accessToken']) && !empty($data['accessToken'])) {
-			$accessToken          = $_GET['accessToken'];
-			$_SESSION['auth_key'] = $accessToken;
-			if (is_string($accessToken)) {
-				header('location: ' . $this->getRedirectUrl());
-			}
-		}
-	}
-
-	public function siteUrl()
-	{
-		#return $this->protocol . '://' . $this->api_key . ':' . $this->computed_password() . '@' . $this->url . '/admin';
-		return $this->protocol . '://' . $this->url . '/panel/api/oauth/' . $this->api_key . ':' . $this->computed_password();
-	}
-
-	public function valid()
-	{
-		return ($this->url) ? true : false;
-	}
+    public function getOAuthTokenSecret()
+    {
+        return $this->oauth_token_secret;
+    }
 
 	public function __destruct()
 	{
 		unset($this->api_key);
 		unset($this->secret_key);
-		unset($this->url);
+		unset($this->oauth_token);
+        unset($this->oauth_token_secret);
 		unset($this->category);
 		unset($this->collection);
 		unset($this->customer);
@@ -203,25 +230,5 @@ class ShoploApi
 		unset($this->product_image);
 		unset($this->product_variant);
 		unset($this->shop);
-	}
-
-	/*
-		END PUBLIC
-		BEGIN PRIVATE
-	*/
-
-	private function computed_password()
-	{
-		return $this->secret_key;
-	}
-
-	protected function prepare_url($url)
-	{
-		return $url;
-	}
-
-	public function toString()
-	{
-		return $this->consumer_key . ' => ' . $this->consumer_secret;
 	}
 }

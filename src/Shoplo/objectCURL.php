@@ -1,5 +1,5 @@
 <?php
-
+/*
 namespace Shoplo;
 
 class objectCURL
@@ -78,4 +78,4 @@ class objectCURL
 		unlink($g);
 		return $d;
 	}
-}
+}*/
