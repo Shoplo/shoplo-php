@@ -1,5 +1,5 @@
 {
-    "name": "Shoplo/shoplo-php",
+    "name": "shoplo/client",
     "require": {
         "guzzle/guzzle": "v2.7.2"
     },
