@@ -3,7 +3,7 @@
 namespace Shoplo;
 //namespace Guzzle;
 
-define('SHOPLO_API_URL','http://local.api.shoplo.com');
+define('SHOPLO_API_URL','http://api.shoplo.com');
 define('SHOPLO_REQUEST_TOKEN_URI', '/services/oauth/request_token');
 define('SHOPLO_ACCESS_TOKEN_URI', '/services/oauth/access_token');
 define('SHOPLO_AUTHORIZE_URL', SHOPLO_API_URL . '/services/oauth/authorize');
