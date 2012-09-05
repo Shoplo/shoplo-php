@@ -11,8 +11,8 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 ini_set('display_errors','TRUE');
 
-define('SECRET_KEY','MY_SECRET_KEY');
-define('CONSUMER_KEY', 'MY_CONSUMER_KEY');
+define('SECRET_KEY','7STV801JT5Fc1HXAwEVP65s4a3aUvvWC');
+define('CONSUMER_KEY', 'nq9qgoYntkF5ZsIEOc388j0xoeosJ3WC');
 define('CALLBACK_URL', 'http://shoploapi/example.php');
 
 session_start();
@@ -30,7 +30,11 @@ try
 
     try
     {
-        $data = $shoploApi->product->retrieve();
+        # retrieve all products
+        #$data = $shoploApi->product->retrieve();
+        # count all products
+        $data = $shoploApi->product->count();
+        print_r($data);exit;
     }
     catch ( \Shoplo\AuthException $e )
     {

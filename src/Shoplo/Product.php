@@ -24,8 +24,8 @@ class Product extends Resource
 
 	public function count($collection_id = 0, $params = array())
 	{
-		$params = url_encode_array($params);
-		return ($collection_id > 0) ? sendToAPI($this->prefix . "products/count?collection_id=" . $collection_id . "&" . $params) : sendToAPI($this->prefix . "products/count?" . $params);
+		$params = $this->prepare_params($params);
+		return ($collection_id > 0) ? $this->send($this->prefix . "products/count?collection_id=" . $collection_id . "&" . $params) : $this->send($this->prefix . "products/count?" . $params);
 	}
 
 	public function create($fields)

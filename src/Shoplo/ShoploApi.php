@@ -3,7 +3,7 @@
 namespace Shoplo;
 //namespace Guzzle;
 
-define('SHOPLO_API_URL','http://api.shoplo.com');
+define('SHOPLO_API_URL','http://local.api.shoplo.com');
 define('SHOPLO_REQUEST_TOKEN_URI', '/services/oauth/request_token');
 define('SHOPLO_ACCESS_TOKEN_URI', '/services/oauth/access_token');
 define('SHOPLO_AUTHORIZE_URL', SHOPLO_API_URL . '/services/oauth/authorize');
@@ -162,7 +162,7 @@ class ShoploApi
         $_SESSION['oauth_token_secret'] = $token['oauth_token_secret'];
 
 
-        $callback_uri = $this->callback_url . '?consumer_key='.rawurlencode(CONSUMER_KEY);
+        $callback_uri = $this->callback_url . '?consumer_key='.rawurlencode($this->api_key);
         $uri = SHOPLO_AUTHORIZE_URL . '?oauth_token='.rawurlencode($token['oauth_token']).'&oauth_callback='.rawurlencode($callback_uri);
 
 

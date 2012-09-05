@@ -6,6 +6,7 @@ class Resource
 {
     protected $client;
 	protected $bucket = array();
+    protected $prefix = '';
 
 	public function __construct($client)
 	{
