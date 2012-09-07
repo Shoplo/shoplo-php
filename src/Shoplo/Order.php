@@ -15,7 +15,7 @@ class Order extends Resource
 			return $this->bucket['order'];
 		} else {
 			if (!$cache || !isset($this->bucket['order'][$id])) {
-				$result                     = $this->send($this->prefix . "/order/" . $id);
+				$result                     = $this->send($this->prefix . "/orders/" . $id);
 				$this->bucket['order'][$id] = $this->prepare_result($result);
 			}
 			return $this->bucket['order'][$id];
