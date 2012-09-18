@@ -29,7 +29,9 @@ class Resource
 
 		if (isset($result['status'])) return $result;
 
-		$data = array();
+		return $result;
+
+        /*$data = array();
 		foreach ($result as $k => $v) {
 			if (!is_array($v)) {
 				$data = $result;
@@ -39,7 +41,7 @@ class Resource
 			$data[$id] = $v;
 			unset($result[$k]);
 		}
-		return $data;
+		return $data;*/
 	}
 
 	protected function send($uri, $request = 'GET', $fields = array())
