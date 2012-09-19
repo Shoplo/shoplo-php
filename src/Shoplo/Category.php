@@ -22,26 +22,26 @@ class Category extends Resource
 		}
 	}
 
-	public function count($collection_id = 0, $params = array())
+	public function count($params = array())
 	{
-		$params = url_encode_array($params);
-		return ($collection_id > 0) ? sendToAPI($this->prefix . "products/count?collection_id=" . $collection_id . "&" . $params) : sendToAPI($this->prefix . "products/count?" . $params);
+		$params = $this->prepare_params($params);
+		return empty($params) ? $this->send("categories/count") : $this->send("categories/count?" . $params);
 	}
 
 	public function create($fields)
 	{
-		$fields = array('product' => $fields);
-		return sendToAPI($this->prefix . "products", 'POST', $fields);
+        $fields = array('category' => $fields);
+        return $this->send("categories", 'POST', $fields);
 	}
 
 	public function modify($id, $fields)
 	{
-		$fields = array('product' => $fields);
-		return sendToAPI($this->prefix . "products/" . $id, 'PUT', $fields);
+        $fields = array('category' => $fields);
+        return $this->send("categories/" . $id, 'PUT', $fields);
 	}
 
 	public function remove($id)
 	{
-		return sendToAPI($this->prefix . "products/" . $id, 'DELETE');
+		return $this->send("categories/" . $id, 'DELETE');
 	}
 }
