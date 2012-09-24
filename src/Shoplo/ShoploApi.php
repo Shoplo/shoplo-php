@@ -3,7 +3,7 @@
 namespace Shoplo;
 //namespace Guzzle;
 
-define('SHOPLO_API_URL','http://api.shoplo.com');
+define('SHOPLO_API_URL','http://local.api.shoplo.com');
 define('SHOPLO_REQUEST_TOKEN_URI', '/services/oauth/request_token');
 define('SHOPLO_ACCESS_TOKEN_URI', '/services/oauth/access_token');
 define('SHOPLO_AUTHORIZE_URL', SHOPLO_API_URL . '/services/oauth/authorize');
@@ -117,6 +117,7 @@ class ShoploApi
         $this->product         = new Product($client);
         $this->product_image   = new ProductImage($client);
         $this->product_variant = new ProductVariant($client);
+        $this->vendor          = new Vendor($client);
         $this->shop            = new Shop($client);
 	}
 
@@ -229,6 +230,7 @@ class ShoploApi
 		unset($this->product);
 		unset($this->product_image);
 		unset($this->product_variant);
+        unset($this->vendor);
 		unset($this->shop);
 	}
 }
