@@ -31,13 +31,13 @@ class Order extends Resource
 	public function create($fields)
 	{
 		$fields = array('order' => $fields);
-		return $this->send($this->prefix . "orders", 'POST', $fields);
+		return $this->send("orders", 'POST', $fields);
 	}
 
 	public function modify($id, $fields)
 	{
-		#$fields = array('order' => $fields);
-		return $this->send($this->prefix . "orders/" . $id, 'PUT', $fields);
+        $fields = array('order' => $fields);
+        return $this->send("orders/" . $id, 'PUT', $fields);
 	}
 
 	public function remove($id)
