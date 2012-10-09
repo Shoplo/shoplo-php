@@ -2,7 +2,7 @@
 
 namespace Shoplo;
 
-class ShoploAuthStore
+class AuthStore
 {
     static private $instance = false;
 
@@ -11,17 +11,17 @@ class ShoploAuthStore
      */
 	public static function getInstance ( $object = null, $options = array() )
     {
-        if (!OAuthStore::$instance)
+        if (!AuthStore::$instance)
         {
-            if ( !($object instanceof ShoploAuthStoreAbstract) )
+            if ( !($object instanceof AuthStoreAbstract) )
             {
-                OAuthStore::$instance = new ShoploAuthSessionStore();
+                AuthStore::$instance = new AuthSessionStore();
             }
             else
             {
-                OAuthStore::$instance = $object;
+                AuthStore::$instance = $object;
             }
         }
-        return OAuthStore::$instance;
+        return AuthStore::$instance;
     }
 }

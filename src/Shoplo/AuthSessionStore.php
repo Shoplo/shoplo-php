@@ -9,7 +9,7 @@ namespace Shoplo;
  * Time: 08:45
  * To change this template use File | Settings | File Templates.
  */
-class ShoploAuthSessionStore extends ShoploAuthStoreAbstract
+class AuthSessionStore extends AuthStoreAbstract
 {
     private $oauth_token,
             $oauth_token_secret,

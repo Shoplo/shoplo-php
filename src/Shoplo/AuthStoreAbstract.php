@@ -2,7 +2,7 @@
 
 namespace Shoplo;
 
-abstract class ShoploAuthStoreAbstract
+abstract class AuthStoreAbstract
 {
     abstract public function authorize();
     abstract public function getOAuthToken();
