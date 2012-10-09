@@ -108,7 +108,7 @@ class ShoploApi
 		$this->api_key    = $config['api_key'];
 		$this->secret_key = $config['secret_key'];
 		$this->callback_url = (false === strpos($config['callback_url'], 'http')) ? 'http://'.$config['callback_url'] : $config['callback_url'];
-        $this->auth_store = \ShoploAuthStore::getInstance($authStore);
+        $this->auth_store = ShoploAuthStore::getInstance($authStore);
 
         $this->authorize();
 

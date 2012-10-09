@@ -1,11 +1,7 @@
 <?php
-/**
- * Created by JetBrains PhpStorm.
- * User: grzegorzlech
- * Date: 12-10-09
- * Time: 08:35
- * To change this template use File | Settings | File Templates.
- */
+
+namespace Shoplo;
+
 class ShoploAuthStore
 {
     static private $instance = false;

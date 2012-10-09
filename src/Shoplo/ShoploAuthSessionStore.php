@@ -1,4 +1,7 @@
 <?php
+
+namespace Shoplo;
+
 /**
  * Created by JetBrains PhpStorm.
  * User: grzegorzlech
