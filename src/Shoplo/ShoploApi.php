@@ -21,6 +21,11 @@ class ShoploApi
 	private $secret_key;
 
     /**
+     * @var ShoploAuthStore
+     */
+    private $auth_store;
+
+    /**
      * @var String
      */
     private $oauth_token;
@@ -80,7 +85,7 @@ class ShoploApi
 	 */
 	public $shop;
 
-	public function __construct($config)
+	public function __construct($config, $authStore=null)
 	{
         if ( !session_id() )
         {
@@ -103,7 +108,7 @@ class ShoploApi
 		$this->api_key    = $config['api_key'];
 		$this->secret_key = $config['secret_key'];
 		$this->callback_url = (false === strpos($config['callback_url'], 'http')) ? 'http://'.$config['callback_url'] : $config['callback_url'];
-
+        $this->auth_store = \ShoploAuthStore::getInstance($authStore);
 
         $this->authorize();
 
@@ -124,15 +129,13 @@ class ShoploApi
 
     public function authorize()
     {
-        if ( isset($_SESSION['oauth_token']) )
+        if ( $this->auth_store->authorize() )
         {
-            $this->oauth_token = $_SESSION['oauth_token'];
-            $this->oauth_token_secret = $_SESSION['oauth_token_secret'];
-            //unset($_SESSION['oauth_token'], $_SESSION['oauth_token_secret']);
-            $this->authorized = true;
+            $this->oauth_token        = $this->auth_store->getOAuthToken();
+            $this->oauth_token_secret = $this->auth_store->getOAuthTokenSecret();
+            $this->authorized         = true;
             return true;
         }
-
 
         if ( empty($_GET["oauth_token"]) )
         {
@@ -187,8 +190,10 @@ class ShoploApi
             $token[$k] = $v;
         }
 
-        $this->oauth_token = $_SESSION['oauth_token'] = $token['oauth_token'];
-        $this->oauth_token_secret = $_SESSION['oauth_token_secret'] = $token['oauth_token_secret'];
+        $this->oauth_token = $token['oauth_token'];
+        $this->oauth_token_secret = $token['oauth_token_secret'];
+
+        $this->auth_store->setAuthorizeData($token['oauth_token'], $token['oauth_token_secret']);
     }
 
     public function getClient($token=null, $tokenSecret=null)
