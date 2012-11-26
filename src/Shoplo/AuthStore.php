@@ -22,6 +22,10 @@ class AuthStore
                 AuthStore::$instance = $object;
             }
         }
+        elseif ( !is_null($object ) )
+        {
+            AuthStore::$instance = $object;
+        }
         return AuthStore::$instance;
     }
 }
