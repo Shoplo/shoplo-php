@@ -85,9 +85,9 @@ class ShoploApi
 	 */
 	public $shop;
 
-	public function __construct($config, $authStore=null)
+	public function __construct($config, $authStore=null, $disableSession=false)
 	{
-        if ( !session_id() )
+        if ( !$disableSession && !session_id() )
         {
             throw new ShoploException('Session not initialized');
         }
@@ -134,6 +134,7 @@ class ShoploApi
             $this->oauth_token        = $this->auth_store->getOAuthToken();
             $this->oauth_token_secret = $this->auth_store->getOAuthTokenSecret();
             $this->authorized         = true;
+
             return true;
         }
 
