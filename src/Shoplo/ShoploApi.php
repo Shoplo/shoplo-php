@@ -85,6 +85,11 @@ class ShoploApi
 	 */
 	public $shop;
 
+	/**
+	 * @var Webhook
+	 */
+	public $webhook;
+
 	public function __construct($config, $authStore=null, $disableSession=false)
 	{
         if ( !$disableSession && !session_id() )
@@ -124,6 +129,7 @@ class ShoploApi
         $this->product_variant = new ProductVariant($client);
         $this->vendor          = new Vendor($client);
         $this->shop            = new Shop($client);
+		$this->webhook         = new Webhook($client);
 	}
 
 
@@ -238,5 +244,6 @@ class ShoploApi
 		unset($this->product_variant);
         unset($this->vendor);
 		unset($this->shop);
+		unset($this->webhook);
 	}
 }
