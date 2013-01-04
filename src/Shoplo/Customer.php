@@ -24,8 +24,8 @@ class Customer extends Resource
 
 	public function count($params = array())
 	{
-		$params = url_encode_array($params);
-		return sendToAPI($this->prefix . "products/count?" . $params);
+		$params = $this->prepare_params($params);
+		return empty($params) ? $this->send("customers/count") : $this->send("customers/count?" . $params);
 	}
 
 	public function create($fields)
