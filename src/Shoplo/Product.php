@@ -37,7 +37,7 @@ class Product extends Resource
 	public function modify($id, $fields)
 	{
 		$fields = array('product' => $fields);
-		return $this->send($this->prefix . "products/" . $id, 'PUT', $fields);
+		return $this->send($this->prefix . "products/" . $id, 'POST', $fields);
 	}
 
 	public function remove($id)

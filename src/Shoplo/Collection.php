@@ -37,7 +37,7 @@ class Collection extends Resource
     public function modify($id, $fields)
     {
         $fields = array('collection' => $fields);
-        return $this->send($this->prefix . "collections/" . $id, 'PUT', $fields);
+        return $this->send($this->prefix . "collections/" . $id, 'POST', $fields);
     }
 
     public function remove($id)

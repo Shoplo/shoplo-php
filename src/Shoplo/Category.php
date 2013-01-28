@@ -37,7 +37,7 @@ class Category extends Resource
 	public function modify($id, $fields)
 	{
         $fields = array('category' => $fields);
-        return $this->send($this->prefix . "categories/" . $id, 'PUT', $fields);
+        return $this->send($this->prefix . "categories/" . $id, 'POST', $fields);
 	}
 
 	public function remove($id)

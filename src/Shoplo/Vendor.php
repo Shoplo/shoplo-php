@@ -37,7 +37,7 @@ class Vendor extends Resource
     public function modify($id, $fields)
     {
         $fields = array('vendor' => $fields);
-        return $this->send($this->prefix . "vendors/" . $id, 'PUT', $fields);
+        return $this->send($this->prefix . "vendors/" . $id, 'POST', $fields);
     }
 
     public function remove($id)
