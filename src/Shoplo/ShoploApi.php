@@ -40,6 +40,11 @@ class ShoploApi
      */
     public $authorized = false;
 
+	/**
+	 * @var Cart
+	 */
+	public $cart;
+
     /**
 	 * @var Category
 	 */
@@ -120,6 +125,7 @@ class ShoploApi
 
         $client = $this->getClient();
         $this->category        = new Category($client);
+		$this->cart        	   = new Cart($client);
         $this->collection      = new Collection($client);
         $this->customer        = new Customer($client);
         $this->order           = new Order($client);
@@ -236,6 +242,7 @@ class ShoploApi
 		unset($this->oauth_token);
         unset($this->oauth_token_secret);
 		unset($this->category);
+		unset($this->cart);
 		unset($this->collection);
 		unset($this->customer);
 		unset($this->order);
