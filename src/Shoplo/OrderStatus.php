@@ -31,17 +31,17 @@ class OrderStatus extends Resource
 	public function create($fields)
 	{
 		$fields = array('status' => $fields);
-		return sendToAPI($this->prefix . "statuses", 'POST', $fields);
+		return $this->send($this->prefix . "statuses", 'POST', $fields);
 	}
 
 	public function modify($id, $fields)
 	{
 		$fields = array('status' => $fields);
-		return sendToAPI($this->prefix . "statuses/" . $id, 'PUT', $fields);
+		return $this->send($this->prefix . "statuses/" . $id, 'POST', $fields);
 	}
 
 	public function remove($id)
 	{
-		return sendToAPI($this->prefix . "statuses/" . $id, 'DELETE');
+		return $this->send($this->prefix . "statuses/" . $id, 'DELETE');
 	}
 }

@@ -37,7 +37,7 @@ class Order extends Resource
 	public function modify($id, $fields)
 	{
         $fields = array('order' => $fields);
-        return $this->send($this->prefix . "orders/" . $id, 'PUT', $fields);
+        return $this->send($this->prefix . "orders/" . $id, 'POST', $fields);
 	}
 
 	public function remove($id)

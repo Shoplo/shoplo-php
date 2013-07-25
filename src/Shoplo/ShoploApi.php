@@ -3,7 +3,7 @@
 namespace Shoplo;
 //namespace Guzzle;
 
-define('SHOPLO_API_URL','http://api.shoplo.com');
+define('SHOPLO_API_URL','http://api.shoplo.lc');
 define('SHOPLO_REQUEST_TOKEN_URI', '/services/oauth/request_token');
 define('SHOPLO_ACCESS_TOKEN_URI', '/services/oauth/access_token');
 define('SHOPLO_AUTHORIZE_URL', SHOPLO_API_URL . '/services/oauth/authorize');
@@ -95,6 +95,16 @@ class ShoploApi
 	 */
 	public $webhook;
 
+    /**
+     * @var Page
+     */
+    public $page;
+
+    /**
+     * @var Checkout
+     */
+    public $checkout;
+
 	public function __construct($config, $authStore=null, $disableSession=false)
 	{
         if ( !$disableSession && !session_id() )
@@ -136,6 +146,9 @@ class ShoploApi
         $this->vendor          = new Vendor($client);
         $this->shop            = new Shop($client);
 		$this->webhook         = new Webhook($client);
+        $this->page            = new Page($client);
+        $this->shipping        = new Shipping($client);
+        $this->checkout        = new Checkout($client);
 	}
 
 
