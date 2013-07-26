@@ -40,8 +40,10 @@ class Order extends Resource
         return $this->send($this->prefix . "orders/" . $id, 'POST', $fields);
 	}
 
-	public function remove($id)
+	public function remove($id, $params = array())
 	{
-		return $this->send($this->prefix . "orders/" . $id, 'DELETE');
+        $params = $this->prepare_params($params);
+        $result = empty($params) ? $this->send($this->prefix . "orders/{$id}/", 'DELETE') : $this->send($this->prefix . "orders/{$id}/?" . $params, 'DELETE');
+        return $result;
 	}
 }
