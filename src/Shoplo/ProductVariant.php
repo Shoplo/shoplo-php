@@ -21,4 +21,10 @@ class ProductVariant extends Resource
             return $this->bucket['variant'][$variantId];
         }
     }
+
+    public function modify($id, $fields)
+    {
+        $fields = array('variant' => $fields);
+        return $this->send($this->prefix . "/variants/" . $id, 'POST', $fields);
+    }
 }
