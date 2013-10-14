@@ -22,9 +22,26 @@ class ProductVariant extends Resource
         }
     }
 
-    public function modify($id, $fields)
+    public function count($productId, $params = array())
+    {
+        $params = $this->prepare_params($params);
+        return $this->send($this->prefix . "products/{$productId}/variants/count?" . $params);
+    }
+
+    public function create($productId, $fields)
     {
         $fields = array('variant' => $fields);
-        return $this->send($this->prefix . "/variants/" . $id, 'POST', $fields);
+        return $this->send($this->prefix . "/products/{$productId}/variants", 'POST', $fields);
+    }
+
+    public function modify($productId, $variantId, $fields)
+    {
+        $fields = array('variant' => $fields);
+        return $this->send($this->prefix . "/products/" . $productId . "/variants/" . $variantId, 'POST', $fields);
+    }
+
+    public function remove($productId, $variantId)
+    {
+        return $this->send($this->prefix . "/products/{$productId}/variants/{$variantId}/", 'DELETE');
     }
 }
