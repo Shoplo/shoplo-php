@@ -37,7 +37,7 @@ class OrderStatus extends Resource
 	public function modify($id, $fields)
 	{
 		$fields = array('status' => $fields);
-		return $this->send($this->prefix . "statuses/" . $id, 'POST', $fields);
+		return $this->send($this->prefix . "statuses/" . $id, 'PUT', $fields);
 	}
 
 	public function remove($id)

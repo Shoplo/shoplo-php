@@ -37,7 +37,7 @@ class ProductVariant extends Resource
     public function modify($productId, $variantId, $fields)
     {
         $fields = array('variant' => $fields);
-        return $this->send($this->prefix . "/products/" . $productId . "/variants/" . $variantId, 'POST', $fields);
+        return $this->send($this->prefix . "/products/" . $productId . "/variants/" . $variantId, 'PUT', $fields);
     }
 
     public function remove($productId, $variantId)

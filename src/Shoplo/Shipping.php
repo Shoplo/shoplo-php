@@ -37,7 +37,7 @@ class Shipping extends Resource
     public function modify($id, $fields)
     {
         $fields = array('shipping' => $fields);
-        return $this->send($this->prefix . "shipping/" . $id, 'POST', $fields);
+        return $this->send($this->prefix . "shipping/" . $id, 'PUT', $fields);
     }
 
     public function remove($id)
