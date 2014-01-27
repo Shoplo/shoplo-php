@@ -4,7 +4,7 @@ namespace Shoplo;
 
 class ProductVariant extends Resource
 {
-    public function retrieve($productId, $variantId = 0, $params = array(), $cache = false)
+    public function retrieve($productId = 0, $variantId = 0, $params = array(), $cache = false)
     {
         if ($variantId == 0) {
             if (!$cache || !isset($this->bucket['variant'])) {
@@ -13,6 +13,12 @@ class ProductVariant extends Resource
                 $this->bucket['variant'] = $this->prepare_result($result);
             }
             return $this->bucket['variant'];
+        } elseif ($variantId && $productId == 0) {
+            if (!$cache || !isset($this->bucket['variant'][$variantId])) {
+                $result                       = $this->send($this->prefix . "/variant/" . $variantId);
+                $this->bucket['variant'][$variantId] = $this->prepare_result($result);
+            }
+            return $this->bucket['variant'][$variantId];
         } else {
             if (!$cache || !isset($this->bucket['variant'][$variantId])) {
                 $result                       = $this->send($this->prefix . "/products/" . $productId . "/variants/" . $variantId);
