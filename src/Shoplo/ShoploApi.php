@@ -127,7 +127,16 @@ class ShoploApi
 
 		$this->api_key    = $config['api_key'];
 		$this->secret_key = $config['secret_key'];
-		$this->callback_url = (false === strpos($config['callback_url'], 'http')) ? 'http://'.$config['callback_url'] : $config['callback_url'];
+
+        $shopDomain = null;
+        if( isset($_GET['shop_domain']) )
+            $shopDomain = addslashes($_GET['shop_domain']);
+
+        if( $shopDomain == 'check.shoplo.com' || $shopDomain == 'check2.shoplo.com' )
+            $this->callback_url = (false === strpos($config['callback_url'], 'http')) ? 'http://'.$config['callback_url'].'&shop_domain='.$shopDomain : $config['callback_url'].'&shop_domain='.$shopDomain;
+        else
+            $this->callback_url = (false === strpos($config['callback_url'], 'http')) ? 'http://'.$config['callback_url'] : $config['callback_url'];
+
         $this->auth_store = AuthStore::getInstance($authStore);
 
         $this->authorize();
