@@ -129,13 +129,13 @@ class ShoploApi
 		$this->secret_key = $config['secret_key'];
 
         $shopDomain = null;
-        if( isset($_GET['shop_domain']) )
+        if( isset($_GET['shop_domain']) && ( $_GET['shop_domain'] == 'check.shoplo.com' || $_GET['shop_domain'] == 'check2.shoplo.com' ) )
+        {
             $shopDomain = addslashes($_GET['shop_domain']);
+            $_SESSION['shop_domain'] = $shopDomain;
+        }
 
-        if( $shopDomain == 'check.shoplo.com' || $shopDomain == 'check2.shoplo.com' )
-            $this->callback_url = (false === strpos($config['callback_url'], 'http')) ? 'http://'.$config['callback_url'].'&shop_domain='.$shopDomain : $config['callback_url'].'&shop_domain='.$shopDomain;
-        else
-            $this->callback_url = (false === strpos($config['callback_url'], 'http')) ? 'http://'.$config['callback_url'] : $config['callback_url'];
+        $this->callback_url = (false === strpos($config['callback_url'], 'http')) ? 'http://'.$config['callback_url'] : $config['callback_url'];
 
         $this->auth_store = AuthStore::getInstance($authStore);
 
@@ -200,10 +200,16 @@ class ShoploApi
         }
         $_SESSION['oauth_token_secret'] = $token['oauth_token_secret'];
 
+        if( isset($_SESSION['shop_domain']) && $_SESSION['shop_domain'] )
+        {
+            $shopDomain = $_SESSION['shop_domain'];
+            $callback_uri = $this->callback_url . '?consumer_key='.rawurlencode($this->api_key).'&shop_domain='.$shopDomain;
+            unset($_SESSION['shop_domain']);
+        }
+        else
+            $callback_uri = $this->callback_url . '?consumer_key='.rawurlencode($this->api_key);
 
-        $callback_uri = $this->callback_url . '?consumer_key='.rawurlencode($this->api_key);
         $uri = SHOPLO_AUTHORIZE_URL . '?oauth_token='.rawurlencode($token['oauth_token']).'&oauth_callback='.rawurlencode($callback_uri);
-
 
         header('Location: '.$uri);
         exit();
