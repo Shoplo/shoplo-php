@@ -129,7 +129,7 @@ class ShoploApi
 		$this->secret_key = $config['secret_key'];
 
         $shopDomain = null;
-        if( isset($_GET['shop_domain']) && ( $_GET['shop_domain'] == 'check.shoplo.com' || $_GET['shop_domain'] == 'check2.shoplo.com' ) )
+        if( isset($_GET['shop_domain']) )
         {
             $shopDomain = addslashes($_GET['shop_domain']);
             $_SESSION['shop_domain'] = $shopDomain;
