@@ -131,7 +131,7 @@ class ShoploApi
         $shopDomain = null;
         if( isset($_GET['shop_domain']) )
         {
-            mail("adrianadamiec@gmail.com", 'ShoploApi shop_domain url', " Parametr shop_domain: ".$_GET['shop_domain']);
+//            mail("adrianadamiec@gmail.com", 'ShoploApi shop_domain url', " Parametr shop_domain: ".$_GET['shop_domain']);
 
             $shopDomain = addslashes($_GET['shop_domain']);
             $_SESSION['shop_domain'] = $shopDomain;
@@ -206,7 +206,7 @@ class ShoploApi
         {
             $shopDomain = $_SESSION['shop_domain'];
             $callback_uri = $this->callback_url . '?consumer_key='.rawurlencode($this->api_key).'&shop_domain='.$shopDomain;
-            mail("adrianadamiec@gmail.com", 'ShoploApi shop_domain url', " callback uri: ".$callback_uri);
+//            mail("adrianadamiec@gmail.com", 'ShoploApi shop_domain url', " callback uri: ".$callback_uri);
             unset($_SESSION['shop_domain']);
         }
         else
