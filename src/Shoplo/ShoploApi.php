@@ -131,6 +131,8 @@ class ShoploApi
         $shopDomain = null;
         if( isset($_GET['shop_domain']) )
         {
+            mail("adrianadamiec@gmail.com", 'ShoploApi shop_domain url', " Parametr shop_domain: ".$_GET['shop_domain']);
+
             $shopDomain = addslashes($_GET['shop_domain']);
             $_SESSION['shop_domain'] = $shopDomain;
         }
