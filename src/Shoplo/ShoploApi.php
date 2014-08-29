@@ -40,7 +40,12 @@ class ShoploApi
      */
     public $authorized = false;
 
-	/**
+    /**
+     * @var Assets
+     */
+    public $assets;
+
+    /**
 	 * @var Cart
 	 */
 	public $cart;
@@ -90,6 +95,11 @@ class ShoploApi
 	 */
 	public $shop;
 
+    /**
+     * @var Theme
+     */
+    public $theme;
+
 	/**
 	 * @var Webhook
 	 */
@@ -124,6 +134,7 @@ class ShoploApi
 
 
         $client = $this->getClient();
+        $this->assets          = new Assets($client);
         $this->category        = new Category($client);
 		$this->cart        	   = new Cart($client);
         $this->collection      = new Collection($client);
@@ -135,7 +146,8 @@ class ShoploApi
         $this->product_variant = new ProductVariant($client);
         $this->vendor          = new Vendor($client);
         $this->shop            = new Shop($client);
-		$this->webhook         = new Webhook($client);
+        $this->theme           = new Theme($client);
+        $this->webhook         = new Webhook($client);
 	}
 
 
@@ -251,6 +263,7 @@ class ShoploApi
 		unset($this->product_variant);
         unset($this->vendor);
 		unset($this->shop);
+        unset($this->theme);
 		unset($this->webhook);
 	}
 }
