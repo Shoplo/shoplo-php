@@ -105,6 +105,16 @@ class ShoploApi
 	 */
 	public $webhook;
 
+    /**
+     * @var Page
+     */
+    public $page;
+
+    /**
+     * @var Checkout
+     */
+    public $checkout;
+
 	public function __construct($config, $authStore=null, $disableSession=false)
 	{
         if ( !$disableSession && !session_id() )
@@ -127,7 +137,16 @@ class ShoploApi
 
 		$this->api_key    = $config['api_key'];
 		$this->secret_key = $config['secret_key'];
-		$this->callback_url = (false === strpos($config['callback_url'], 'http')) ? 'http://'.$config['callback_url'] : $config['callback_url'];
+
+        $shopDomain = null;
+        if( isset($_GET['shop_domain']) )
+        {
+            $shopDomain = addslashes($_GET['shop_domain']);
+            $_SESSION['shop_domain'] = $shopDomain;
+        }
+
+        $this->callback_url = (false === strpos($config['callback_url'], 'http')) ? 'http://'.$config['callback_url'] : $config['callback_url'];
+
         $this->auth_store = AuthStore::getInstance($authStore);
 
         $this->authorize();
@@ -146,8 +165,11 @@ class ShoploApi
         $this->product_variant = new ProductVariant($client);
         $this->vendor          = new Vendor($client);
         $this->shop            = new Shop($client);
+		$this->webhook         = new Webhook($client);
         $this->theme           = new Theme($client);
-        $this->webhook         = new Webhook($client);
+        $this->page            = new Page($client);
+        $this->shipping        = new Shipping($client);
+        $this->checkout        = new Checkout($client);
 	}
 
 
@@ -190,10 +212,17 @@ class ShoploApi
         }
         $_SESSION['oauth_token_secret'] = $token['oauth_token_secret'];
 
+        if( isset($_SESSION['shop_domain']) && $_SESSION['shop_domain'] )
+        {
+            $shopDomain = $_SESSION['shop_domain'];
+            $callback_uri = $this->callback_url . '?consumer_key='.rawurlencode($this->api_key).'&shop_domain='.$shopDomain;
 
-        $callback_uri = $this->callback_url . '?consumer_key='.rawurlencode($this->api_key);
+            unset($_SESSION['shop_domain']);
+        }
+        else
+            $callback_uri = $this->callback_url . '?consumer_key='.rawurlencode($this->api_key);
+
         $uri = SHOPLO_AUTHORIZE_URL . '?oauth_token='.rawurlencode($token['oauth_token']).'&oauth_callback='.rawurlencode($callback_uri);
-
 
         header('Location: '.$uri);
         exit();

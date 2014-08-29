@@ -51,7 +51,19 @@ class Resource
 
         $method = strtolower($request);
         $headers = null;
-        $body = ( $method == 'post' ) ? $fields : null;
+
+        if( $method == 'post')
+        {
+            $body = $fields;
+        }
+        elseif( $method == 'put' )
+        {
+            $body = http_build_query($fields);
+        }
+        else
+        {
+            $body = null;
+        }
 
         $response = $this->client->$method($uri, $headers, $body)->send();
         $result = json_decode($response->getBody(true), true);
