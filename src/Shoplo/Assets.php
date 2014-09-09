@@ -6,14 +6,17 @@ class Assets extends Resource
 {
 	public function retrieve($themeId, $key = null, $params = array(), $cache = false)
 	{
-		if (is_null($key)) {
+		if (is_null($key))
+        {
 			if (!$cache || !isset($this->bucket['assets'])) {
 				$params = http_build_query($params);
 				$result = empty($params) ? $this->send($this->prefix . "themes/{$themeId}/assets") : $this->send($this->prefix . "themes/{$themeId}/assets?" . $params);
 				$this->bucket['assets'] = $this->prepare_result($result);
 			}
 			return $this->bucket['assets'];
-		} else {
+		}
+        else
+        {
 			if (!$cache || !isset($this->bucket['assets'][$key])) {
 				$result                       = $this->send($this->prefix . "themes/{$themeId}/assets?asset[key]=" . $key);
 				$this->bucket['assets'][$key] = $this->prepare_result($result);
