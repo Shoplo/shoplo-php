@@ -31,7 +31,7 @@ class Assets extends Resource
     public function create($themeId, $fields)
     {
         $fields = array('assets' => $fields);
-        return $this->send("theme/{$themeId}/assets", 'POST', $fields);
+        return $this->send("themes/{$themeId}/assets", 'POST', $fields);
     }
 
 	public function modify($themeId, $id, $fields)
@@ -42,6 +42,6 @@ class Assets extends Resource
 
 	public function remove($themeId, $id)
 	{
-		return $this->send("theme/{$themeId}/assets?asset[key]=" . $id, 'DELETE');
+		return $this->send("themes/{$themeId}/assets?asset[key]=" . $id, 'DELETE');
 	}
 }
