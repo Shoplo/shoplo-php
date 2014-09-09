@@ -15,7 +15,7 @@ class Assets extends Resource
 			return $this->bucket['assets'];
 		} else {
 			if (!$cache || !isset($this->bucket['assets'][$id])) {
-				$result                       = $this->send($this->prefix . "themes/{$themeId}/assets?assets[key]=" . $id);
+				$result                       = $this->send($this->prefix . "themes/{$themeId}/assets?asset[key]=" . $id);
 				$this->bucket['assets'][$id] = $this->prepare_result($result);
 			}
 			return $this->bucket['assets'][$id];
@@ -42,6 +42,6 @@ class Assets extends Resource
 
 	public function remove($themeId, $id)
 	{
-		return $this->send("theme/{$themeId}/assets?assets[key]=" . $id, 'DELETE');
+		return $this->send("theme/{$themeId}/assets?asset[key]=" . $id, 'DELETE');
 	}
 }
