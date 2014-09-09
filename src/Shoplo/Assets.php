@@ -4,18 +4,18 @@ namespace Shoplo;
 
 class Assets extends Resource
 {
-	public function retrieve($id = 0, $params = array(), $cache = false)
+	public function retrieve($themeId, $s = 0, $params = array(), $cache = false)
 	{
 		if ($id == 0) {
 			if (!$cache || !isset($this->bucket['assets'])) {
 				$params = http_build_query($params);
-				$result = empty($params) ? $this->send($this->prefix . "assets") : $this->send($this->prefix . "assets?" . $params);
+				$result = empty($params) ? $this->send($this->prefix . "themes/{$themeId}/assets") : $this->send($this->prefix . "themes/{$themeId}/assets?" . $params);
 				$this->bucket['assets'] = $this->prepare_result($result);
 			}
 			return $this->bucket['assets'];
 		} else {
 			if (!$cache || !isset($this->bucket['assets'][$id])) {
-				$result                       = $this->send($this->prefix . "/assets/" . $id);
+				$result                       = $this->send($this->prefix . "/themes/{$themeId}/assets?assets[key]=" . $id);
 				$this->bucket['assets'][$id] = $this->prepare_result($result);
 			}
 			return $this->bucket['assets'][$id];
@@ -28,20 +28,20 @@ class Assets extends Resource
 		return $this->send($this->prefix . "assets/count?" . $params);
 	}
 
-    public function create($fields)
+    public function create($themeId, $fields)
     {
         $fields = array('assets' => $fields);
-        return $this->send("assets", 'POST', $fields);
+        return $this->send("theme/{$themeId}/assets", 'POST', $fields);
     }
 
-	public function modify($id, $fields)
+	public function modify($themeId, $id, $fields)
 	{
 		$fields = array('assets' => $fields);
-		return $this->send($this->prefix . "assets/" . $id, 'POST', $fields);
+		return $this->send($this->prefix . "theme/{$themeId}/assets/" . $id, 'POST', $fields);
 	}
 
-	public function remove($id)
+	public function remove($themeId, $id)
 	{
-		return $this->send("assets/" . $id, 'DELETE');
+		return $this->send("theme/{$themeId}/assets?assets[key]=" . $id, 'DELETE');
 	}
 }
