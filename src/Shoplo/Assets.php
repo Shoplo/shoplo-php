@@ -6,7 +6,7 @@ class Assets extends Resource
 {
 	public function retrieve($themeId, $id = 0, $params = array(), $cache = false)
 	{
-		if ($id == 0) {
+		if ($id === 0) {
 			if (!$cache || !isset($this->bucket['assets'])) {
 				$params = http_build_query($params);
 				$result = empty($params) ? $this->send($this->prefix . "themes/{$themeId}/assets") : $this->send($this->prefix . "themes/{$themeId}/assets?" . $params);
@@ -30,13 +30,13 @@ class Assets extends Resource
 
     public function create($themeId, $fields)
     {
-        $fields = array('assets' => $fields);
+        $fields = array('asset' => $fields);
         return $this->send("themes/{$themeId}/assets", 'POST', $fields);
     }
 
 	public function modify($themeId, $id, $fields)
 	{
-		$fields = array('assets' => $fields);
+		$fields = array('asset' => $fields);
 		return $this->send($this->prefix . "theme/{$themeId}/assets/" . $id, 'POST', $fields);
 	}
 
