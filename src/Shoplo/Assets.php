@@ -4,7 +4,7 @@ namespace Shoplo;
 
 class Assets extends Resource
 {
-	public function retrieve($themeId, $s = 0, $params = array(), $cache = false)
+	public function retrieve($themeId, $id = 0, $params = array(), $cache = false)
 	{
 		if ($id == 0) {
 			if (!$cache || !isset($this->bucket['assets'])) {
