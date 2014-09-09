@@ -4,9 +4,9 @@ namespace Shoplo;
 
 class Assets extends Resource
 {
-	public function retrieve($themeId, $id = 0, $params = array(), $cache = false)
+	public function retrieve($themeId, $key = null, $params = array(), $cache = false)
 	{
-		if ($id === 0) {
+		if (is_null($key)) {
 			if (!$cache || !isset($this->bucket['assets'])) {
 				$params = http_build_query($params);
 				$result = empty($params) ? $this->send($this->prefix . "themes/{$themeId}/assets") : $this->send($this->prefix . "themes/{$themeId}/assets?" . $params);
@@ -14,11 +14,11 @@ class Assets extends Resource
 			}
 			return $this->bucket['assets'];
 		} else {
-			if (!$cache || !isset($this->bucket['assets'][$id])) {
-				$result                       = $this->send($this->prefix . "themes/{$themeId}/assets?asset[key]=" . $id);
-				$this->bucket['assets'][$id] = $this->prepare_result($result);
+			if (!$cache || !isset($this->bucket['assets'][$key])) {
+				$result                       = $this->send($this->prefix . "themes/{$themeId}/assets?asset[key]=" . $key);
+				$this->bucket['assets'][$key] = $this->prepare_result($result);
 			}
-			return $this->bucket['assets'][$id];
+			return $this->bucket['assets'][$key];
 		}
 	}
 
