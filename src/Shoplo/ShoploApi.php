@@ -115,6 +115,16 @@ class ShoploApi
      */
     public $checkout;
 
+    /**
+     * @var Voucher
+     */
+    public $voucher;
+
+    /**
+     * @var Promotion
+     */
+    public $promotion;
+
 	public function __construct($config, $authStore=null, $disableSession=false)
 	{
         if ( !$disableSession && !session_id() )
@@ -170,6 +180,8 @@ class ShoploApi
         $this->page            = new Page($client);
         $this->shipping        = new Shipping($client);
         $this->checkout        = new Checkout($client);
+        $this->voucher         = new Voucher($client);
+        $this->promotion       = new Promotion($client);
 	}
 
 
