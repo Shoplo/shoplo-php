@@ -125,6 +125,11 @@ class ShoploApi
      */
     public $promotion;
 
+	/**
+	 * @var ApplicationCharge
+	 */
+	public $application_charge;
+
 	public function __construct($config, $authStore=null, $disableSession=false)
 	{
         if ( !$disableSession && !session_id() )
@@ -182,6 +187,7 @@ class ShoploApi
         $this->checkout        = new Checkout($client);
         $this->voucher         = new Voucher($client);
         $this->promotion       = new Promotion($client);
+		$this->application_charge 	= new ApplicationCharge($client);
 	}
 
 
@@ -306,5 +312,6 @@ class ShoploApi
 		unset($this->shop);
         unset($this->theme);
 		unset($this->webhook);
+		unset($this->application_charge);
 	}
 }
