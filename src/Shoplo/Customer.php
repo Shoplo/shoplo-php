@@ -35,12 +35,12 @@ class Customer extends Resource
 
 	public function modify($id, $fields)
 	{
-		$fields = array('product' => $fields);
-		return sendToAPI($this->prefix . "products/" . $id, 'PUT', $fields);
+		$fields = array('customer' => $fields);
+		return sendToAPI($this->prefix . "customers/" . $id, 'PUT', $fields);
 	}
 
 	public function remove($id)
 	{
-		return sendToAPI($this->prefix . "products/" . $id, 'DELETE');
+		return sendToAPI($this->prefix . "customers/" . $id, 'DELETE');
 	}
 }
