@@ -296,7 +296,7 @@ class ShoploApi
         return $this->oauth_token_secret;
     }
 
-    public function isLoggedInAdminPanel()
+    public function isLoggedInAdmin()
     {
         $client = $this->getClient();
         $response = $client->post(SHOPLO_IS_LOGGED_IN_PANEL_URL)->send();
