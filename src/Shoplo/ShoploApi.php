@@ -7,6 +7,8 @@ define('SHOPLO_API_URL','http://api.shoplo.com');
 define('SHOPLO_REQUEST_TOKEN_URI', '/services/oauth/request_token');
 define('SHOPLO_ACCESS_TOKEN_URI', '/services/oauth/access_token');
 define('SHOPLO_AUTHORIZE_URL', SHOPLO_API_URL . '/services/oauth/authorize');
+define('SHOPLO_IS_LOGGED_IN_PANEL_URL', SHOPLO_API_URL . '/services/panel/isloggedin');
+
 
 class ShoploApi
 {
@@ -292,6 +294,20 @@ class ShoploApi
     public function getOAuthTokenSecret()
     {
         return $this->oauth_token_secret;
+    }
+
+    public function isLoggedInAdminPanel()
+    {
+        $client = $this->getClient();
+        $response = $client->post(SHOPLO_IS_LOGGED_IN_PANEL_URL)->send();
+        $data = explode('&', $response->getBody(true));
+        $dataArr = array();
+        foreach ( $data as $d )
+        {
+            list($k, $v) = explode('=', $d);
+            $dataArr[$k] = $v;
+        }
+        return $dataArr;
     }
 
 	public function __destruct()
