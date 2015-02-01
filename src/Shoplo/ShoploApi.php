@@ -7,7 +7,7 @@ define('SHOPLO_API_URL','http://api.shoplo.com');
 define('SHOPLO_REQUEST_TOKEN_URI', '/services/oauth/request_token');
 define('SHOPLO_ACCESS_TOKEN_URI', '/services/oauth/access_token');
 define('SHOPLO_AUTHORIZE_URL', SHOPLO_API_URL . '/services/oauth/authorize');
-define('SHOPLO_IS_LOGGED_IN_PANEL_URL', SHOPLO_API_URL . '/services/panel/isloggedin');
+define('SHOPLO_IS_LOGGED_IN_PANEL_URL', SHOPLO_API_URL . '/services/admin/isloggedin');
 
 
 class ShoploApi
@@ -298,16 +298,10 @@ class ShoploApi
 
     public function isLoggedInAdmin()
     {
-        $client = $this->getClient();
+        $client = $this->getClient($this->oauth_token, $this->oauth_token_secret);
         $response = $client->post(SHOPLO_IS_LOGGED_IN_PANEL_URL)->send();
-        $data = explode('&', $response->getBody(true));
-        $dataArr = array();
-        foreach ( $data as $d )
-        {
-            list($k, $v) = explode('=', $d);
-            $dataArr[$k] = $v;
-        }
-        return $dataArr;
+        $data = json_decode($response->getBody(true), true);
+        return (bool)$data['is_logged_in_admin'];
     }
 
 	public function __destruct()
