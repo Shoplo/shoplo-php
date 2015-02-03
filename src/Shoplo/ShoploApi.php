@@ -296,14 +296,6 @@ class ShoploApi
         return $this->oauth_token_secret;
     }
 
-    public function isLoggedInAdmin()
-    {
-        $client = $this->getClient($this->oauth_token, $this->oauth_token_secret);
-        $response = $client->post(SHOPLO_IS_LOGGED_IN_PANEL_URL)->send();
-        $data = json_decode($response->getBody(true), true);
-        return (bool)$data['is_logged_in_admin'];
-    }
-
 	public function __destruct()
 	{
 		unset($this->api_key);
