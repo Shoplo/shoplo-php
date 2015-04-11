@@ -132,6 +132,11 @@ class ShoploApi
 	 */
 	public $application_charge;
 
+	/**
+	 * @var RecurringApplicationCharge
+	 */
+	public $recurring_application_charge;
+
 	public function __construct($config, $authStore=null, $disableSession=false)
 	{
         if ( !$disableSession && !session_id() )
@@ -190,6 +195,7 @@ class ShoploApi
         $this->voucher         = new Voucher($client);
         $this->promotion       = new Promotion($client);
 		$this->application_charge 	= new ApplicationCharge($client);
+		$this->recurring_application_charge 	= new RecurringApplicationCharge($client);
 	}
 
 
@@ -315,5 +321,6 @@ class ShoploApi
         unset($this->theme);
 		unset($this->webhook);
 		unset($this->application_charge);
+		unset($this->recurring_application_charge);
 	}
 }
