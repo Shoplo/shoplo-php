@@ -103,6 +103,11 @@ class ShoploApi
     public $theme;
 
 	/**
+	 * @var User
+	 */
+	public $user;
+
+	/**
 	 * @var Webhook
 	 */
 	public $webhook;
@@ -194,6 +199,7 @@ class ShoploApi
         $this->checkout        = new Checkout($client);
         $this->voucher         = new Voucher($client);
         $this->promotion       = new Promotion($client);
+		$this->user            = new User($client);
 		$this->application_charge 	= new ApplicationCharge($client);
 		$this->recurring_application_charge 	= new RecurringApplicationCharge($client);
 	}
@@ -319,6 +325,7 @@ class ShoploApi
         unset($this->vendor);
 		unset($this->shop);
         unset($this->theme);
+		unset($this->user);
 		unset($this->webhook);
 		unset($this->application_charge);
 		unset($this->recurring_application_charge);
