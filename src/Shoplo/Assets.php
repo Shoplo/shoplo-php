@@ -39,8 +39,9 @@ class Assets extends Resource
 
 	public function modify($themeId, $id, $fields)
 	{
+		$fields['key'] = $id;
 		$fields = array('asset' => $fields);
-		return $this->send($this->prefix . "theme/{$themeId}/assets/" . $id, 'POST', $fields);
+		return $this->send($this->prefix . "theme/{$themeId}/assets", 'POST', $fields);
 	}
 
 	public function remove($themeId, $id)
