@@ -17,7 +17,7 @@ class Resource
 	{
 		$string = '';
 		if (is_array($params)) {
-			foreach ($params as $k => $v) if (!is_array($v)) $string .= $k . '=' . str_replace(' ', '%20', urlencode($v)) . '&';
+			foreach ($params as $k => $v) if (!is_array($v)) $string .= $k . '=' . urlencode($v) . '&';
 			$string = substr($string, 0, strlen($string) - 1);
 		}
 		return $string;
