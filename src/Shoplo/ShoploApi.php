@@ -3,12 +3,8 @@
 namespace Shoplo;
 //namespace Guzzle;
 
-define('SHOPLO_API_URL','https://api.shoplo.com');
 define('SHOPLO_REQUEST_TOKEN_URI', '/services/oauth/request_token');
 define('SHOPLO_ACCESS_TOKEN_URI', '/services/oauth/access_token');
-define('SHOPLO_AUTHORIZE_URL', SHOPLO_API_URL . '/services/oauth/authorize');
-define('SHOPLO_IS_LOGGED_IN_PANEL_URL', SHOPLO_API_URL . '/services/admin/isloggedin');
-
 
 class ShoploApi
 {
@@ -147,6 +143,8 @@ class ShoploApi
      */
     public $payment;
 
+    public $api_url;
+
 	public function __construct($config, $authStore=null, $disableSession=false)
 	{
         if ( !$disableSession && !session_id() )
@@ -166,6 +164,7 @@ class ShoploApi
             throw new ShoploException('Invalid Callback Url');
         }
 
+        $this->api_url = isset($config['api_url']) && $config['api_url'] ? $config['api_url'] : 'http://api.shoplo.com';
 
 		$this->api_key    = $config['api_key'];
 		$this->secret_key = $config['secret_key'];
@@ -210,6 +209,10 @@ class ShoploApi
 		$this->payment 	= new Payment($client);
 	}
 
+    public function getAuthorizeUrl()
+    {
+        return $this->api_url . '/services/oauth/authorize';
+    }
 
     public function authorize()
     {
@@ -260,7 +263,7 @@ class ShoploApi
         else
             $callback_uri = $this->callback_url . '?consumer_key='.rawurlencode($this->api_key);
 
-        $uri = SHOPLO_AUTHORIZE_URL . '?oauth_token='.rawurlencode($token['oauth_token']).'&oauth_callback='.rawurlencode($callback_uri);
+        $uri = $this->getAuthorizeUrl() . '?oauth_token='.rawurlencode($token['oauth_token']).'&oauth_callback='.rawurlencode($callback_uri);
 
         header('Location: '.$uri);
         exit();
@@ -298,7 +301,7 @@ class ShoploApi
             'token'           => $token,
             'token_secret'    => $tokenSecret
         ));
-        $client = new \Guzzle\Http\Client(SHOPLO_API_URL);
+        $client = new \Guzzle\Http\Client($this->api_url);
         $client->addSubscriber($oauth);
         return $client;
     }
