@@ -164,7 +164,7 @@ class ShoploApi
             throw new ShoploException('Invalid Callback Url');
         }
 
-        $this->api_url = isset($config['api_url']) && $config['api_url'] ? $config['api_url'] : 'http://api.shoplo.com';
+        $this->api_url = isset($config['api_url']) && $config['api_url'] ? $config['api_url'] : 'https://api.shoplo.com';
 
 		$this->api_key    = $config['api_key'];
 		$this->secret_key = $config['secret_key'];
